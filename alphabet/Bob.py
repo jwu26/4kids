@@ -6,8 +6,10 @@ import random
 import string
 
 #SIZE='tiny'
-SIZE='large'
-#SIZE='long'
+#SIZE='large'
+SIZE='long'
+SPEED=0.3
+#SPEED=0.05
 RES={
       "tiny": {
         'w': 320,
@@ -24,13 +26,14 @@ RES={
 
       "long": {
         'w': 1020,
-        'h': 400
+        'h': 320
       },
      }
 #WIDTH = 640
 #HEIGHT = 360
 white = (255,255,255)
 black = (0, 0, 0)
+misc = (88, 188, 88)
 
 #ball = pygame.image.load("ball.bmp")
 ball = pygame.image.load("ball.jpeg")
@@ -40,16 +43,20 @@ def FullScreen(screen):
   background = background.convert()
   background.fill((250, 250, 250))
 
-
 class _Symbol_:
   '''Title
   Description'''
-  def __init__(self, screen, name):
+  def __init__(self, screen, name, stat):
     self.name = name
     self.position = (0,0)
     self.font = pygame.font.Font(None, 40)
     self.text = self.font.render(name, 1, white)
     self.screen = screen
+    LoadBackground(self.screen, ball)
+    self.font = pygame.font.Font(None, 20)
+    self.stat = self.font.render(stat, 1, misc)
+    self.screen.blit(self.stat, (RES[SIZE]['w'] - 100, RES[SIZE]['h'] - 30))
+    pygame.display.flip()
     print "Alphabel Name: " + self.name +" x.y : %d.%d" % self.position
 
   def __sayHi__(self):
@@ -73,7 +80,6 @@ class _Symbol_:
   def __fallOne__(self, horiz ,line):
     print "line : %d"% line
     #self.screen.fill(black)
-    LoadBackground(self.screen, ball)
     self.screen.blit(self.text, (horiz,line*4))
     pygame.display.flip()
 
@@ -90,13 +96,13 @@ def Paint(screen, char):
     pygame.display.flip()
     sleep(1)
 
-def PaintOne(screen, char, horiz,line):
+def PaintOne(screen, char, horiz,line, stat):
   #check if to get a new Symbol
-  One = _Symbol_(screen, char)
+  One = _Symbol_(screen, char, stat)
   One.__fallOne__(horiz,line)
   
-def Paint_1(screen, char):
-  One = _Symbol_(screen, "A")
+def Paint_1(screen, char, stat):
+  One = _Symbol_(screen, "A", stat)
   One.__falling__()
 
 def LoadBackground(screen, ball):
@@ -110,12 +116,11 @@ def main(argv):
 
   pygame.init()
   size = width, height = RES[SIZE]['w'],RES[SIZE]['h']
-  speed = [2, 2]
+  RIGHT=0
 
   screen = pygame.display.set_mode(size)
   #ball = pygame.image.load("ball.bmp")
 
-  
   clock = pygame.time.Clock()
   ch = 'x'
 
@@ -133,12 +138,9 @@ def main(argv):
         pressed = event.dict['unicode']
         if pressed == ch:
           line = 0
-
-#      ballrect = ballrect.move(speed)
-#      if ballrect.left < 0 or ballrect.right > width:
-#        speed[0] = -speed[0]
-#      if ballrect.top < 0 or ballrect.bottom > height:
-#        speed[1] = -speed[1]
+          RIGHT = RIGHT + 1
+        else:
+          RIGHT = 0
 
        #LoadBackground(screen, ball)
 #      FullScreen(screen)
@@ -147,15 +149,12 @@ def main(argv):
       print "to get a new symbol"
       ch = random.choice(string.lowercase)
       horiz = random.randint(10, RES[SIZE]['w'] - 10)
-    PaintOne(screen, ch.upper(), horiz, line % RES[SIZE]['h'])
-    sleep(0.3)
+    stat = 'RIGHT: < ' + str(RIGHT) + ' >'
+    PaintOne(screen, ch.upper(), horiz, line % RES[SIZE]['h'], stat)
+    sleep(SPEED)
 
-    print "Animation"
+    print "Animation " , RIGHT
     #sleep(2.0)
-    #clock.tick(TIME)
-    
-    #Paint_1(screen, 'X')
-    #Paint(screen, 'X')
 
 if __name__ == '__main__':
   sys.exit(main(sys.argv))
