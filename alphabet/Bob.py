@@ -126,8 +126,8 @@ def main(argv):
 
   line = 0
   horiz = random.randint(10, RES[SIZE]['w'] - 10)
+  paused = 0
   while 1:
-    line = line + 1
     for event in pygame.event.get():
       #print "Get Key : %s "% event
       if event.type == pygame.QUIT: 
@@ -139,21 +139,27 @@ def main(argv):
         if pressed == ch:
           line = 0
           RIGHT = RIGHT + 1
+        elif pressed == " " and paused == 0:
+          paused = 1
+        elif pressed == " " and paused == 1:
+          paused = 0
         else:
           RIGHT = 0
 
        #LoadBackground(screen, ball)
 #      FullScreen(screen)
     
-    if line == 0 :
-      print "to get a new symbol"
-      ch = random.choice(string.lowercase)
-      horiz = random.randint(10, RES[SIZE]['w'] - 10)
-    stat = 'RIGHT: < ' + str(RIGHT) + ' >'
-    PaintOne(screen, ch.upper(), horiz, line % RES[SIZE]['h'], stat)
-    sleep(SPEED)
+    if paused == 0:
+      line = line + 1
+      if line == 0 :
+        print "to get a new symbol"
+        ch = random.choice(string.lowercase)
+        horiz = random.randint(10, RES[SIZE]['w'] - 10)
+      stat = 'RIGHT: < ' + str(RIGHT) + ' >'
+      PaintOne(screen, ch.upper(), horiz, line % RES[SIZE]['h'], stat)
+      sleep(SPEED)
 
-    print "Animation " , RIGHT
+      print "Animation " , RIGHT
     #sleep(2.0)
 
 if __name__ == '__main__':
