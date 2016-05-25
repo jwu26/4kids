@@ -32,7 +32,8 @@ RES={
 white = (255,255,255)
 black = (0, 0, 0)
 
-ball = pygame.image.load("ball.bmp")
+#ball = pygame.image.load("ball.bmp")
+ball = pygame.image.load("ball.jpeg")
 
 def FullScreen(screen):
   background = pygame.Surface(screen.get_size())
