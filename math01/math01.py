@@ -90,9 +90,9 @@ class _Symbol_:
     self.screen.blit(self.text, (horiz,line*4))
     pygame.display.flip()
 
-class _Formula_:
+class _Equation_:
   '''Title
-  Formula in 0 - 100
+  Equation in 0 - 100
   Description'''
   def __init__(self, screen, name):
     self.name = str(name)
@@ -130,8 +130,8 @@ class _Formula_:
     self.screen.blit(self.text, (horiz,line*4))
     pygame.display.flip()
 
-def getFormula():
-    print "get random formulat in 0- ", RANGE_MAX
+def getEquation():
+    print "get random equation in 0- ", RANGE_MAX
     x = random.randint(RANGE_MIN, RANGE_MAX)
     y = random.randint(RANGE_MIN, RANGE_MAX)
     s = sym[random.randint(33, 99)%2]
@@ -162,9 +162,9 @@ def Paint(screen, char):
     pygame.display.flip()
     sleep(1)
 
-def PaintFormula(screen, formula, horiz,line):
+def PaintEquation(screen, equation, horiz,line):
   #check if to get a new Symbol
-  Four = _Formula_(screen, formula)
+  Four = _Equation_(screen, equation)
   Four.__fallOne__(horiz,line)
 
 def PaintOne(screen, char, horiz,line):
@@ -222,10 +222,11 @@ class _GetInputs_:
                     print "uni code: " , int(event.unicode)
                     print "number ", number
                 elif event.key == K_BACKSPACE:
-                    name = name[:-1]
+                    name = self.name[:-1]
                 elif event.key == K_SPACE:
                     self.__reset__()
                     self.paused ^= 1
+                    print "SPACE"
                 elif event.key == K_RETURN:
                     name = ""
                     end = True
@@ -247,16 +248,17 @@ def main(argv):
     #ball = pygame.image.load("ball.bmp")
 
     #ch = 'xy'
-    ch, answer = getFormula()
+    ch, answer = getEquation()
     print "init form"
 
     line = 0
-    horiz = random.randint(10, RES[SIZE]['w'] - 60)
+    horiz = random.randint(10, RES[SIZE]['w'] - 80)
     while 1:
 
         name,number,end = inp.__getInput__()
         inp.__show__()
         if inp.paused == 1:
+#            print "paused"
             continue
 
         line = line + 1
@@ -274,11 +276,11 @@ def main(argv):
 
 #      FullScreen(screen)
         if line == 0 :
-            horiz = random.randint(10, RES[SIZE]['w'] - 60)
-            ch, answer = getFormula()
+            horiz = random.randint(10, RES[SIZE]['w'] - 80)
+            ch, answer = getEquation()
 
         #print ch, horiz
-        PaintFormula(screen, ch, horiz, line % RES[SIZE]['h'])
+        PaintEquation(screen, ch, horiz, line % (RES[SIZE]['h']/4))
         sleep(SPEED)
 
     #print "Animation"
