@@ -47,60 +47,30 @@ misc = (88, 181, 88)
 sym = [" + "," - "]
 
 #ball = pygame.image.load("ball.bmp")
-ball = pygame.image.load("ball.jpeg")
+img = pygame.image.load("ball.jpeg")
 
-def FullScreen(screen):
-  background = pygame.Surface(screen.get_size())
-  background = background.convert()
-  background.fill((250, 250, 250))
+class _Paint_(object):
+    def __init__(self):
+        return
+    def __backgroud__(self, img):
+        imgrect = img.get_rect()
+        screen.fill(black)
+        screen.blit(img, imgrect)
+        pygame.display.flip()
+        return
 
-class _Symbol_:
-  '''Title
-  Description'''
-  def __init__(self, screen, name):
-    self.name = name
-    self.position = (0,0)
-    self.font = pygame.font.Font(None, 40)
-    self.text = self.font.render(name, 1, white)
-    self.screen = screen
-    print "Alphabel Name: " + self.name +" x.y : %d.%d" % self.position
-
-  def __sayHi__(self):
-      print "BoBo, My name is " + self.name
-
-  def __del__(self):
-      print "bye! "+ self.name
-
-  def __setPosition__(value):
-    print "set position: " % value
-    self.position = value
-
-  def __falling__(self):
-    print "I am Falling"
-    for i in range(0, RES[SIZE]['h']/6):
-        #print i
-      self.screen.fill(black)
-      self.screen.blit(self.text, (100,i*4))
-      pygame.display.flip()
-      sleep(0.5)
-  def __fallOne__(self, horiz ,line):
-    print "line : %d"% line
-    #self.screen.fill(black)
-    LoadBackground(self.screen, ball)
-    self.screen.blit(self.text, (horiz,line*4))
-    pygame.display.flip()
-
-class _Equation_:
+class _Equation_(_Paint_):
   '''Title
   Equation in 0 - 100
   Description'''
   def __init__(self, screen, name):
+    super(_Equation_, self).__init__()
     self.name = str(name)
     self.position = (0,0)
     self.font = pygame.font.Font(None, 40)
     self.screen = screen
     self.text = self.font.render(self.name, 1, misc)
-    LoadBackground(self.screen, ball)
+    LoadBackground(self.screen, img)
     #print "Alphabel Name: " + self.name +" x.y : %d.%d" % self.position
 
   def __sayHi__(self):
@@ -126,7 +96,7 @@ class _Equation_:
   def __fallOne__(self, horiz ,line):
     #print "line : %d"% line
     #self.screen.fill(black)
-    #LoadBackground(self.screen, ball)
+    #LoadBackground(self.screen, img)
     self.screen.blit(self.text, (horiz,line*4))
     pygame.display.flip()
 
@@ -167,16 +137,11 @@ def PaintEquation(screen, equation, horiz,line):
   Four = _Equation_(screen, equation)
   Four.__fallOne__(horiz,line)
 
-def PaintOne(screen, char, horiz,line):
-  #check if to get a new Symbol
-  One = _Symbol_(screen, char)
-  One.__fallOne__(horiz,line)
-
-def LoadBackground(screen, ball):
+def LoadBackground(screen, img):
   #print "LoadBackground"
-  ballrect = ball.get_rect()
+  imgrect = img.get_rect()
   screen.fill(black)
-  screen.blit(ball, ballrect)
+  screen.blit(img, imgrect)
   pygame.display.flip()
 
 class _GetInputs_:
@@ -208,19 +173,18 @@ class _GetInputs_:
         number = self.number
         end = self.end
         for event in pygame.event.get():
-            print "Get Key : %s "% event
+            #print "Get Key : %s "% event
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                print "pressed: %s" % event.dict['unicode']
+                #print "pressed: %s" % event.dict['unicode']
                 name = event.dict['unicode']
                 if event.unicode.isalpha():
                     name += event.unicode
                 elif event.unicode.isdigit():
                     number = number*10 + int(event.unicode)
-                    print "uni code: " , int(event.unicode)
-                    print "number ", number
+                    #print "uni code: " , int(event.unicode)
                 elif event.key == K_BACKSPACE:
                     name = self.name[:-1]
                 elif event.key == K_SPACE:
@@ -245,7 +209,7 @@ def main(argv):
 
     screen = pygame.display.set_mode(size)
     inp = _GetInputs_()
-    #ball = pygame.image.load("ball.bmp")
+    #img = pygame.image.load("img.bmp")
 
     #ch = 'xy'
     ch, answer = getEquation()
@@ -274,7 +238,6 @@ def main(argv):
             else:
                 STAT['error'] += 1
 
-#      FullScreen(screen)
         if line == 0 :
             horiz = random.randint(10, RES[SIZE]['w'] - 80)
             ch, answer = getEquation()
