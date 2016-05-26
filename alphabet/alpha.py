@@ -57,7 +57,7 @@ class _Symbol_:
     self.stat = self.font.render(stat, 1, misc)
     self.screen.blit(self.stat, (RES[SIZE]['w'] - 100, RES[SIZE]['h'] - 30))
     pygame.display.flip()
-    print "Alphabel Name: " + self.name +" x.y : %d.%d" % self.position
+    #print "Alphabel Name: " + self.name +" x.y : %d.%d" % self.position
 
   def __sayHi__(self):
     print "BoBo, My name is " + self.name
@@ -72,7 +72,7 @@ class _Symbol_:
   def __falling__(self):
     print "I am Falling"
     for i in range(0, RES[SIZE]['h']/6):
-      #print i 
+      #print i
       self.screen.fill(black)
       self.screen.blit(self.text, (100,i*4))
       pygame.display.flip()
@@ -90,7 +90,7 @@ def Paint(screen, char):
   text = font.render(message, 1, white)
 
   for i in range(0, RES[SIZE]['h']/6):
-    print i 
+    print i
     screen.fill(black)
     screen.blit(text, (100,i*4))
     pygame.display.flip()
@@ -100,10 +100,6 @@ def PaintOne(screen, char, horiz,line, stat):
   #check if to get a new Symbol
   One = _Symbol_(screen, char, stat)
   One.__fallOne__(horiz,line)
-  
-def Paint_1(screen, char, stat):
-  One = _Symbol_(screen, "A", stat)
-  One.__falling__()
 
 def LoadBackground(screen, ball):
   print "LoadBackground"
@@ -130,15 +126,15 @@ def main(argv):
   while 1:
     for event in pygame.event.get():
       #print "Get Key : %s "% event
-      if event.type == pygame.QUIT: 
+      if event.type == pygame.QUIT:
         pygame.quit()
         sys.exit()
       elif event.type == pygame.KEYDOWN:
         print "pressed: %s" % event.dict['unicode']
         pressed = event.dict['unicode']
         if pressed == ch:
-          line = 0
-          RIGHT = RIGHT + 1
+          line = -1
+          RIGHT += 1
         elif pressed == " " and paused == 0:
           paused = 1
         elif pressed == " " and paused == 1:
@@ -148,10 +144,10 @@ def main(argv):
 
        #LoadBackground(screen, ball)
 #      FullScreen(screen)
-    
+
     if paused == 0:
       line = line + 1
-      if line == 0 :
+      if line == 0:
         print "to get a new symbol"
         ch = random.choice(string.lowercase)
         horiz = random.randint(10, RES[SIZE]['w'] - 10)
@@ -166,5 +162,4 @@ if __name__ == '__main__':
   sys.exit(main(sys.argv))
 else:
   print "Import case"
-
 
