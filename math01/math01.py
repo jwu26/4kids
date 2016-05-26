@@ -12,12 +12,12 @@ import thread, time
 SIZE='long'
 SPEED=0.3
 ERROR=0
-RANGE=100  #10 -  RANGE
+RANGE_MIN=1
+RANGE_MAX=50  #10 -  RANGE
 STAT={  "error":0,
         "right":0,
-        "err":"ERROR!!",
-        "right":"CORRECT!!",
-        "score":0
+        "score":0,
+        "total":0
       }
 RES={
         "tiny": {
@@ -131,9 +131,9 @@ class _Formula_:
     pygame.display.flip()
 
 def getFormula():
-    print "get random formulat in 0- ", RANGE
-    x = random.randint(10, RANGE)
-    y = random.randint(10, RANGE)
+    print "get random formulat in 0- ", RANGE_MAX
+    x = random.randint(RANGE_MIN, RANGE_MAX)
+    y = random.randint(RANGE_MIN, RANGE_MAX)
     s = sym[random.randint(33, 99)%2]
     fm = str(x) + s + str(y) + " = "
     if s == sym[1]:
@@ -146,6 +146,7 @@ def getFormula():
     else:
         #print "add"
         value = x + y
+    STAT['total'] += 1
     return fm,value
 
 def Paint(screen, char):
@@ -178,14 +179,14 @@ def LoadBackground(screen, ball):
   screen.blit(ball, ballrect)
   pygame.display.flip()
 
-class _GetInputs:
+class _GetInputs_:
     def __init__(self):
         self.name = ""
         self.number = 0
         self.end = False
+        self.paused = 0
         return
-    def __del__(self):
-        return
+
     def __set__(self, name, number, end):
         self.name = name
         self.number = number
@@ -198,33 +199,42 @@ class _GetInputs:
         #print "---> ", self.name, "---> ", self.number, " ---> ", self.end
         return
 
-def GetInput(inp):
-    #print "id ", inp
-    name = inp.name
-    number = inp.number
-    end = inp.end
-    for event in pygame.event.get():
-        print "Get Key : %s "% event
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        elif event.type == pygame.KEYDOWN:
-            print "pressed: %s" % event.dict['unicode']
-            name = event.dict['unicode']
-            if event.unicode.isalpha():
-                name += event.unicode
-            elif event.unicode.isdigit():
-                number = number*10 + int(event.unicode)
-                print "uni code: " , int(event.unicode)
-                print "number ", number
-            elif event.key == K_BACKSPACE:
-                name = name[:-1]
-            elif event.key == K_RETURN:
-                name = ""
-                end = True
+    def __getInput__(self):
+        #print "id ", inp
+        '''
+        input numbers and paused
+        '''
+        name = self.name
+        number = self.number
+        end = self.end
+        for event in pygame.event.get():
+            print "Get Key : %s "% event
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                print "pressed: %s" % event.dict['unicode']
+                name = event.dict['unicode']
+                if event.unicode.isalpha():
+                    name += event.unicode
+                elif event.unicode.isdigit():
+                    number = number*10 + int(event.unicode)
+                    print "uni code: " , int(event.unicode)
+                    print "number ", number
+                elif event.key == K_BACKSPACE:
+                    name = name[:-1]
+                elif event.key == K_SPACE:
+                    self.__reset__()
+                    self.paused ^= 1
+                elif event.key == K_RETURN:
+                    name = ""
+                    end = True
 
-    inp.__set__(name, number, end)
-    return name, number, end
+        self.__set__(name, number, end)
+        return name, number, end
+
+    def __del__(self):
+        return
 
 def main(argv):
 
@@ -233,7 +243,7 @@ def main(argv):
     pressed = ""
 
     screen = pygame.display.set_mode(size)
-    inp = _GetInputs()
+    inp = _GetInputs_()
     #ball = pygame.image.load("ball.bmp")
 
     #ch = 'xy'
@@ -243,37 +253,31 @@ def main(argv):
     line = 0
     horiz = random.randint(10, RES[SIZE]['w'] - 60)
     while 1:
-        line = line + 1
-    #    str_input = raw_input()
-    #if str_input.isdigit():
-    #    int_input = int(str_input)
-    #else:
-    #    print >> sys.stderr, '%s cant conve to int!' % str_input
-#    for event in pygame.event.get():
-#      print "Get Key : %s "% event
-#      print "Get Key : %s "% event.dict
-#      if event.type == pygame.QUIT:
-#        pygame.quit()
-#        sys.exit()
-#      elif event.type == pygame.KEYDOWN:
-#        print "inped: %s" % event.dict['unicode']
-#        inped = event.dict['unicode']
-        name,number,end = GetInput(inp)
+
+        name,number,end = inp.__getInput__()
         inp.__show__()
+        if inp.paused == 1:
+            continue
+
+        line = line + 1
         if end == True:
             print "Enter Digtal: ",answer
             inp.__show__()
             inp.__reset__()
             if number == answer:
                 #if pressed == ch:
-                print "Clever Boy!!1 Correct !!"
                 line = 0
+                STAT['right'] += 1
+                print "Clever Boy!! Correct !! : ",STAT['right']
+            else:
+                STAT['error'] += 1
 
 #      FullScreen(screen)
         if line == 0 :
             horiz = random.randint(10, RES[SIZE]['w'] - 60)
             ch, answer = getFormula()
 
+        #print ch, horiz
         PaintFormula(screen, ch, horiz, line % RES[SIZE]['h'])
         sleep(SPEED)
 
