@@ -50,13 +50,27 @@ sym = [" + "," - "]
 img = pygame.image.load("ball.jpeg")
 
 class _Paint_(object):
-    def __init__(self):
+    '''
+    basic painting class
+    '''
+    def __init__(self, screen, name):
+        self.font = pygame.font.Font(None, 40)
+        self.screen = screen
+        self.text = self.font.render(name, 1, misc)
         return
-    def __backgroud__(self, img):
+    def __background__(self, screen, img):
         imgrect = img.get_rect()
         screen.fill(black)
         screen.blit(img, imgrect)
         pygame.display.flip()
+        return
+    def __text__(self, font , text, location):
+        self.text = self.font.render(text, 1, misc)
+        self.screen.blit(self.text, location)
+        pygame.display.flip()
+
+    def __del__(self):
+        #print "bye! "+ str(self.name)
         return
 
 class _Equation_(_Paint_):
@@ -64,19 +78,18 @@ class _Equation_(_Paint_):
   Equation in 0 - 100
   Description'''
   def __init__(self, screen, name):
-    super(_Equation_, self).__init__()
+    super(_Equation_, self).__init__(screen, name)
     self.name = str(name)
     self.position = (0,0)
-    self.font = pygame.font.Font(None, 40)
-    self.screen = screen
-    self.text = self.font.render(self.name, 1, misc)
-    LoadBackground(self.screen, img)
+    #self.font = pygame.font.Font(None, 40)
+    #self.screen = screen
+    #self.text = self.font.render(self.name, 1, misc)
+    #LoadBackground(self.screen, img)
+    super(_Equation_, self).__background__(screen, img)
     #print "Alphabel Name: " + self.name +" x.y : %d.%d" % self.position
 
-  def __sayHi__(self):
-    print "BoBo, My name is " + self.name
-
   def __del__(self):
+    super(_Equation_, self).__del__()
     #print "bye! "+ str(self.name)
     return
 
