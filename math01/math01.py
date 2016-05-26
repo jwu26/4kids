@@ -4,25 +4,21 @@ from time import sleep
 from pygame import key
 import random
 import string
-
+from pygame.locals import *
 import thread, time
-
-def input_thread(L):
-    anw=raw_input()
-    print "-------------------> ", anw
-    L.append(None)
-
-def do_print():
-    L = []
-    thread.start_new_thread(input_thread, (L,))
-    #while 1:
-    #   time.sleep(.1)
-    #   if L: break
-    print "Hi Mom!"
 
 #SIZE='tiny'
 #SIZE='large'
 SIZE='long'
+SPEED=0.3
+ERROR=0
+RANGE=100  #10 -  RANGE
+STAT={  "error":0,
+        "right":0,
+        "err":"ERROR!!",
+        "right":"CORRECT!!",
+        "score":0
+      }
 RES={
         "tiny": {
             'w': 320,
@@ -105,13 +101,14 @@ class _Formula_:
     self.screen = screen
     self.text = self.font.render(self.name, 1, misc)
     LoadBackground(self.screen, ball)
-    print "Alphabel Name: " + self.name +" x.y : %d.%d" % self.position
+    #print "Alphabel Name: " + self.name +" x.y : %d.%d" % self.position
 
   def __sayHi__(self):
     print "BoBo, My name is " + self.name
 
   def __del__(self):
-    print "bye! "+ str(self.name)
+    #print "bye! "+ str(self.name)
+    return
 
   def __setPosition__(value):
     print "set position: " % value
@@ -127,18 +124,18 @@ class _Formula_:
       sleep(0.5)
 
   def __fallOne__(self, horiz ,line):
-    print "line : %d"% line
+    #print "line : %d"% line
     #self.screen.fill(black)
     #LoadBackground(self.screen, ball)
     self.screen.blit(self.text, (horiz,line*4))
     pygame.display.flip()
 
 def getFormula():
-    print "get random formulat in 0-100"
-    x = random.randint(10, 100)
-    y = random.randint(10, 100)
+    print "get random formulat in 0- ", RANGE
+    x = random.randint(10, RANGE)
+    y = random.randint(10, RANGE)
     s = sym[random.randint(33, 99)%2]
-    fm = "err"
+    fm = str(x) + s + str(y) + " = "
     if s == sym[1]:
         #print "minus"
       if x < y:
@@ -148,7 +145,6 @@ def getFormula():
         value = x - y
     else:
         #print "add"
-        fm = str(x) + s + str(y) + " = "
         value = x + y
     return fm,value
 
@@ -175,77 +171,113 @@ def PaintOne(screen, char, horiz,line):
   One = _Symbol_(screen, char)
   One.__fallOne__(horiz,line)
 
-def Paint_1(screen, char):
-  One = _Symbol_(screen, "A")
-  One.__falling__()
-
 def LoadBackground(screen, ball):
-  print "LoadBackground"
+  #print "LoadBackground"
   ballrect = ball.get_rect()
   screen.fill(black)
   screen.blit(ball, ballrect)
   pygame.display.flip()
 
+class _GetInputs:
+    def __init__(self):
+        self.name = ""
+        self.number = 0
+        self.end = False
+        return
+    def __del__(self):
+        return
+    def __set__(self, name, number, end):
+        self.name = name
+        self.number = number
+        self.end = end
+        return
+    def __reset__(self):
+        self.__set__("", 0, False)
+        return
+    def __show__(self):
+        #print "---> ", self.name, "---> ", self.number, " ---> ", self.end
+        return
+
+def GetInput(inp):
+    #print "id ", inp
+    name = inp.name
+    number = inp.number
+    end = inp.end
+    for event in pygame.event.get():
+        print "Get Key : %s "% event
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        elif event.type == pygame.KEYDOWN:
+            print "pressed: %s" % event.dict['unicode']
+            name = event.dict['unicode']
+            if event.unicode.isalpha():
+                name += event.unicode
+            elif event.unicode.isdigit():
+                number = number*10 + int(event.unicode)
+                print "uni code: " , int(event.unicode)
+                print "number ", number
+            elif event.key == K_BACKSPACE:
+                name = name[:-1]
+            elif event.key == K_RETURN:
+                name = ""
+                end = True
+
+    inp.__set__(name, number, end)
+    return name, number, end
+
 def main(argv):
 
-  pygame.init()
-  size = width, height = RES[SIZE]['w'],RES[SIZE]['h']
-  speed = [2, 2]
+    pygame.init()
+    size = width, height = RES[SIZE]['w'],RES[SIZE]['h']
+    pressed = ""
 
-  screen = pygame.display.set_mode(size)
-  #ball = pygame.image.load("ball.bmp")
+    screen = pygame.display.set_mode(size)
+    inp = _GetInputs()
+    #ball = pygame.image.load("ball.bmp")
 
-  #clock = pygame.time.Clock()
-  #ch = 'xy'
-  ch, answer = getFormula()
-  print "init form"
+    #ch = 'xy'
+    ch, answer = getFormula()
+    print "init form"
 
-  line = 0
-  horiz = random.randint(10, RES[SIZE]['w'] - 10)
-  while 1:
-    line = line + 1
+    line = 0
+    horiz = random.randint(10, RES[SIZE]['w'] - 60)
+    while 1:
+        line = line + 1
     #    str_input = raw_input()
     #if str_input.isdigit():
     #    int_input = int(str_input)
     #else:
     #    print >> sys.stderr, '%s cant conve to int!' % str_input
-    do_print()
-    for event in pygame.event.get():
-      print "Get Key : %s "% event
-      print "Get Key : %s "% event.dict
-      if event.type == pygame.QUIT:
-        pygame.quit()
-        sys.exit()
-      elif event.type == pygame.KEYDOWN:
-        print "pressed: %s" % event.dict['unicode']
-        pressed = event.dict['unicode']
-        if pressed == answer:
-            #if pressed == ch:
-          line = 0
+#    for event in pygame.event.get():
+#      print "Get Key : %s "% event
+#      print "Get Key : %s "% event.dict
+#      if event.type == pygame.QUIT:
+#        pygame.quit()
+#        sys.exit()
+#      elif event.type == pygame.KEYDOWN:
+#        print "inped: %s" % event.dict['unicode']
+#        inped = event.dict['unicode']
+        name,number,end = GetInput(inp)
+        inp.__show__()
+        if end == True:
+            print "Enter Digtal: ",answer
+            inp.__show__()
+            inp.__reset__()
+            if number == answer:
+                #if pressed == ch:
+                print "Clever Boy!!1 Correct !!"
+                line = 0
 
-#      ballrect = ballrect.move(speed)
-#      if ballrect.left < 0 or ballrect.right > width:
-#        speed[0] = -speed[0]
-#      if ballrect.top < 0 or ballrect.bottom > height:
-#        speed[1] = -speed[1]
-
-       #LoadBackground(screen, ball)
 #      FullScreen(screen)
-    if line == 0 :
-      print "to get a new symbol"
-      ch = random.choice(string.lowercase)
-      horiz = random.randint(10, RES[SIZE]['w'] - 10)
-    #PaintOne(screen, ch.upper(), horiz, line % RES[SIZE]['h'])
-    #sleep(0.3)
-    #horiz = random.randint(10, RES[SIZE]['w'] - 10)
-    PaintFormula(screen, ch, horiz, line % RES[SIZE]['h'])
-    sleep(0.3)
+        if line == 0 :
+            horiz = random.randint(10, RES[SIZE]['w'] - 60)
+            ch, answer = getFormula()
 
-    print "Animation"
-    #sleep(2.0)
-    #clock.tick(TIME)
-    #Paint_1(screen, 'X')
-    #Paint(screen, 'X')
+        PaintFormula(screen, ch, horiz, line % RES[SIZE]['h'])
+        sleep(SPEED)
+
+    #print "Animation"
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))
