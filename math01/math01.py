@@ -58,15 +58,24 @@ class _Paint_(object):
         self.screen = screen
         self.text = self.font.render(name, 1, misc)
         return
+
     def __background__(self, screen, img):
         imgrect = img.get_rect()
         screen.fill(black)
         screen.blit(img, imgrect)
         pygame.display.flip()
         return
+
     def __text__(self, font , text, location):
         self.text = self.font.render(text, 1, misc)
         self.screen.blit(self.text, location)
+        pygame.display.flip()
+
+    # Draw clock
+    def __clock__(self):
+        font = pygame.font.Font(None, 28)
+        survivedtext = font.render(str((90000-pygame.time.get_ticks())/60000)+":"+str((90000-pygame.time.get_ticks())/1000%60).zfill(2), True, black)
+        self.screen.blit(survivedtext, (RES[SIZE]['w'] - 60, RES[SIZE]['h'] - 30))
         pygame.display.flip()
 
     def __del__(self):
@@ -149,6 +158,8 @@ def PaintEquation(screen, equation, horiz,line):
   #check if to get a new Symbol
   Four = _Equation_(screen, equation)
   Four.__fallOne__(horiz,line)
+  print horiz,line
+  Four.__clock__()
 
 def LoadBackground(screen, img):
   #print "LoadBackground"
