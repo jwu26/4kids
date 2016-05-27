@@ -48,6 +48,7 @@ sym = [" + "," - "]
 
 #ball = pygame.image.load("ball.bmp")
 img = pygame.image.load("ball.jpeg")
+score_panel=pygame.image.load("score_panel.png")
 
 class _Paint_(object):
     '''
@@ -77,6 +78,11 @@ class _Paint_(object):
         survivedtext = font.render(str((90000-pygame.time.get_ticks())/60000)+":"+str((90000-pygame.time.get_ticks())/1000%60).zfill(2), True, black)
         self.screen.blit(survivedtext, (RES[SIZE]['w'] - 60, RES[SIZE]['h'] - 30))
         pygame.display.flip()
+
+    def __HUD__(self):
+        #draw the background for the bottom:
+        self.screen.blit(score_panel, [0, RES[SIZE]['h'] - 60])
+        self.__clock__()
 
     def __del__(self):
         #print "bye! "+ str(self.name)
@@ -160,6 +166,7 @@ def PaintEquation(screen, equation, horiz,line):
   Four.__fallOne__(horiz,line)
   print horiz,line
   Four.__clock__()
+  #Four.__HUD__()
 
 def LoadBackground(screen, img):
   #print "LoadBackground"
