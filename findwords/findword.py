@@ -16,13 +16,11 @@ def main(argv):
     NUM = 0
 
     for line in file_object:
-        #print line
         words = line.split('\',\'')
         #print words[1]
         #words[1] = "abcd"
         for i, ch in enumerate(words[1]):
             if ch == " ":
-                #print "quit"
                 score = 0
                 break;
             score += ord(ch) - a_asc
@@ -36,8 +34,13 @@ def main(argv):
             pass
         score = 0
         
-    print WOO
+    #print WOO
     print "Total Num " , NUM
+    i = 0
+    for w in range(len(WOO)/10 + 1):
+        #print w
+        print "LINE:", w + 1," " , WOO[10*w:10*(w+1)]
+       
     file_object.close()
     return
 
