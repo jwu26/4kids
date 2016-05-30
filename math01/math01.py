@@ -50,21 +50,20 @@ pygame.init()
 
 #load picture
 #ball = pygame.image.load("ball.bmp")
-img = pygame.image.load("ball.jpeg")
-score_panel=pygame.image.load("score_panel.png")
+img = pygame.image.load("./images/ball.jpeg")
+score_panel=pygame.image.load("./images/score_panel.png")
 
 def load_audio(wav):
     tmp=pygame.mixer.Sound(wav)
-    tmp.set_volume(0.2)
+    tmp.set_volume(1)
     return tmp
 
 #load audio
 pygame.mixer.init()
-grape=pygame.mixer.Sound("audio/grape.wav")
-grape.set_volume(0.1)
+grape = load_audio("audio/grape.wav")
 low = load_audio("audio/low.wav")
+high = load_audio("audio/high.wav")
 pants = load_audio("audio/pants.wav")
-pants.play()
 
 class _Paint_(object):
     '''
@@ -127,15 +126,6 @@ class _Equation_(_Paint_):
   def __setPosition__(value):
     print "set position: " % value
     self.position = value
-
-  def __falling__(self):
-    print "I am Falling"
-    for i in range(0, RES[SIZE]['h']/6):
-        #print i
-      self.screen.fill(black)
-      self.screen.blit(self.text, (100,i*4))
-      pygame.display.flip()
-      sleep(0.5)
 
   def __fallOne__(self, horiz ,line):
     #print "line : %d"% line
@@ -281,10 +271,17 @@ def main(argv):
                 line = 0
                 STAT['right'] += 1
                 print "Clever Boy!! Correct !! : ",STAT['right']
-                grape.play()
+                if STAT['right'] % 3 == 0:
+                    print "Right 3/6/9"
+                    pants.play()
+                elif STAT['right'] % 2 == 0:
+                    print "Right 2/4/8"
+                    high.play()
+                else:
+                    grape.play()
             else:
                 STAT['error'] += 1
-                low.play()
+                pants.play()
 
         if line == 0 :
             horiz = random.randint(10, RES[SIZE]['w'] - 80)
