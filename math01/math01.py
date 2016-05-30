@@ -89,9 +89,12 @@ class _Paint_(object):
 
     # Draw clock
     def __clock__(self):
-        font = pygame.font.Font(None, 28)
-        survivedtext = font.render(str((90000-pygame.time.get_ticks())/60000)+":"+str((90000-pygame.time.get_ticks())/1000%60).zfill(2), True, black)
-        self.screen.blit(survivedtext, (RES[SIZE]['w'] - 60, RES[SIZE]['h'] - 30))
+        font = pygame.font.Font(None, 24)
+        stat_text = "Right/Error: <" + str(STAT['right']) + "/" + str(STAT['error']) + "> Clock: <"+ str((90000-pygame.time.get_ticks())/60000)+":"+str((90000-pygame.time.get_ticks())/1000%60).zfill(2)+ ">"
+        #stat_text = str((90000-pygame.time.get_ticks())/60000)+":"+str((90000-pygame.time.get_ticks())/1000%60).zfill(2)
+        survivedtext = font.render(stat_text, True, black)
+        #survivedtext = font.render(str((90000-pygame.time.get_ticks())/60000)+":"+str((90000-pygame.time.get_ticks())/1000%60).zfill(2), True, black)
+        self.screen.blit(survivedtext, (RES[SIZE]['w'] - 240, RES[SIZE]['h'] - 30))
         pygame.display.flip()
 
     def __HUD__(self):
@@ -153,24 +156,11 @@ def getEquation():
     STAT['total'] += 1
     return fm,value
 
-def Paint(screen, char):
-  print "Paint Text"
-  message = char
-  font = pygame.font.Font(None, 40)
-  text = font.render(message, 1, white)
-
-  for i in range(0, RES[SIZE]['h']/6):
-    print i
-    screen.fill(black)
-    screen.blit(text, (100,i*4))
-    pygame.display.flip()
-    sleep(1)
-
 def PaintEquation(screen, equation, horiz,line):
   #check if to get a new Symbol
   Four = _Equation_(screen, equation)
   Four.__fallOne__(horiz,line)
-  print horiz,line
+  #print horiz,line
   Four.__clock__()
   #Four.__HUD__()
 
@@ -276,12 +266,16 @@ def main(argv):
                     pants.play()
                 elif STAT['right'] % 2 == 0:
                     print "Right 2/4/8"
+                    low.play()
+                elif STAT['right'] % 5 == 0:
                     high.play()
                 else:
                     grape.play()
             else:
                 STAT['error'] += 1
                 pants.play()
+                if STAT['error'] == 0:
+                    pants.play()
 
         if line == 0 :
             horiz = random.randint(10, RES[SIZE]['w'] - 80)
@@ -297,5 +291,4 @@ if __name__ == '__main__':
     sys.exit(main(sys.argv))
 else:
     print "Import case"
-
 
