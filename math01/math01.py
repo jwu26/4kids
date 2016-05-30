@@ -46,9 +46,25 @@ misc = (88, 181, 88)
 
 sym = [" + "," - "]
 
+pygame.init()
+
+#load picture
 #ball = pygame.image.load("ball.bmp")
 img = pygame.image.load("ball.jpeg")
 score_panel=pygame.image.load("score_panel.png")
+
+def load_audio(wav):
+    tmp=pygame.mixer.Sound(wav)
+    tmp.set_volume(0.2)
+    return tmp
+
+#load audio
+pygame.mixer.init()
+grape=pygame.mixer.Sound("audio/grape.wav")
+grape.set_volume(0.1)
+low = load_audio("audio/low.wav")
+pants = load_audio("audio/pants.wav")
+pants.play()
 
 class _Paint_(object):
     '''
@@ -234,7 +250,6 @@ class _GetInputs_:
 
 def main(argv):
 
-    pygame.init()
     size = width, height = RES[SIZE]['w'],RES[SIZE]['h']
     pressed = ""
 
@@ -266,8 +281,10 @@ def main(argv):
                 line = 0
                 STAT['right'] += 1
                 print "Clever Boy!! Correct !! : ",STAT['right']
+                grape.play()
             else:
                 STAT['error'] += 1
+                low.play()
 
         if line == 0 :
             horiz = random.randint(10, RES[SIZE]['w'] - 80)
