@@ -15,3 +15,6 @@ it's a add/takeof game under 100, like: equation is falling down from top of win
 
 # sample01
 refer to : https://www.raywenderlich.com/24252/beginning-game-programming-for-teens-with-python
+
+#findwords
+it's Justin's homework, which is words finding that sum of word alphabets equals 100
