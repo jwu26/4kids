@@ -1,4 +1,4 @@
-# 4kids
+# games for kids
 Just a Game Set For Kids under 7
 
 # Installation
