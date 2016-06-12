@@ -117,7 +117,6 @@ class _Equation_(_Paint_):
     #self.font = pygame.font.Font(None, 40)
     #self.screen = screen
     #self.text = self.font.render(self.name, 1, misc)
-    #LoadBackground(self.screen, img)
     super(_Equation_, self).__background__(screen, img)
     #print "Alphabel Name: " + self.name +" x.y : %d.%d" % self.position
 
@@ -133,7 +132,6 @@ class _Equation_(_Paint_):
   def __fallOne__(self, horiz ,line):
     #print "line : %d"% line
     #self.screen.fill(black)
-    #LoadBackground(self.screen, img)
     self.screen.blit(self.text, (horiz,line*4))
     pygame.display.flip()
 
@@ -164,14 +162,10 @@ def PaintEquation(screen, equation, horiz,line):
   Four.__clock__()
   #Four.__HUD__()
 
-def LoadBackground(screen, img):
-  #print "LoadBackground"
-  imgrect = img.get_rect()
-  screen.fill(black)
-  screen.blit(img, imgrect)
-  pygame.display.flip()
-
 class _GetInputs_:
+    '''
+    handle num inputs
+    '''
     def __init__(self):
         self.name = ""
         self.number = 0
